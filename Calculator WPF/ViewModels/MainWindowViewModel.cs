@@ -208,8 +208,9 @@ namespace Calculator_WPF.ViewModels
         {
             if (double.TryParse(Input, NumberStyles.Any, CultureInfo.InvariantCulture, out double res))
             {
+                res = Round((res / 100), 3);
                 History = $"{Input}% =";
-                Input = Round((res / 100), 3).ToString().Replace(',', '.');
+                Input = res.ToString().Length < 9 ? res.ToString().Replace(',', '.') : res.ToString("0.000E+00").Replace(',', '.');
             }
         }
         #endregion
@@ -224,13 +225,15 @@ namespace Calculator_WPF.ViewModels
             if (double.TryParse(Input, NumberStyles.Any, CultureInfo.InvariantCulture, out double res))
                 if ((string)p == "cos")
                 {
+                    res = Round(Cos(res), 3);
                     History = $"cos({Input}) =";
-                    Input = Round(Cos(res), 3).ToString().Replace(',', '.');
+                    Input = res.ToString().Length < 9 ? res.ToString().Replace(',', '.') : res.ToString("0.000E+00").Replace(',', '.');
                 }
                 else
                 {
+                    res = Round(Sin(res), 3);
                     History = $"sin({Input}) =";
-                    Input = Round(Sin(res), 3).ToString().Replace(',', '.');
+                    Input = res.ToString().Length < 9 ? res.ToString().Replace(',', '.') : res.ToString("0.000E+00").Replace(',', '.');
                 }
         }
         #endregion
@@ -249,7 +252,10 @@ namespace Calculator_WPF.ViewModels
                     Input = "Error";
                 }
                 else
-                    Input = Round(Pow(res, 1 / 2f), 3).ToString().Replace(',', '.');
+                {
+                    res = Round(Pow(res, 1 / 2f), 3);
+                    Input = res.ToString().Length < 9 ? res.ToString().Replace(',', '.') : res.ToString("0.000E+00").Replace(',', '.');
+                }
             }
         }
         #endregion
@@ -262,8 +268,9 @@ namespace Calculator_WPF.ViewModels
         {
             if (double.TryParse(Input, NumberStyles.Any, CultureInfo.InvariantCulture, out double res))
             {
+                res = Round(Pow(res, 2), 3);
                 History = $"{Input}² =";
-                Input = Round(Pow(res, 2), 3).ToString().Replace(',', '.');
+                Input = res.ToString().Length < 9 ? res.ToString().Replace(',', '.') : res.ToString("0.000E+00").Replace(',', '.');
             }
         }
         #endregion
@@ -275,8 +282,9 @@ namespace Calculator_WPF.ViewModels
         {
             if (double.TryParse(Input, NumberStyles.Any, CultureInfo.InvariantCulture, out double res))
             {
+                res = Round(Pow(res, 3), 3);
                 History = $"{Input}³ =";
-                Input = Round(Pow(res, 3), 3).ToString().Replace(',', '.');
+                Input = res.ToString().Length < 9 ? res.ToString().Replace(',', '.') : res.ToString("0.000E+00").Replace(',', '.');
             }
         }
         #endregion
