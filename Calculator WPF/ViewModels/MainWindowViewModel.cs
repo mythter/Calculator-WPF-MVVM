@@ -235,6 +235,88 @@ namespace Calculator_WPF.ViewModels
         }
         #endregion
 
+        #region SquareRootCommand
+        public ICommand SquareRootCommand { get; }
+
+        private bool OnSquareRootCommandExecute(object p) => true;
+        private void OnSquareRootCommandExecuted(object p)
+        {
+            if (double.TryParse(Input, NumberStyles.Any, CultureInfo.InvariantCulture, out double res))
+            {
+                History = $"√{Input} =";
+                if (res < 0)
+                {
+                    Input = "Error";
+                }
+                else
+                    Input = Round(Pow(res, 1 / 2f), 3).ToString().Replace(',', '.');
+            }
+        }
+        #endregion
+
+        #region SquareCommand
+        public ICommand SquareCommand { get; }
+
+        private bool OnSquareCommandExecute(object p) => true;
+        private void OnSquareCommandExecuted(object p)
+        {
+            if (double.TryParse(Input, NumberStyles.Any, CultureInfo.InvariantCulture, out double res))
+            {
+                History = $"{Input}² =";
+                Input = Round(Pow(res, 2), 3).ToString().Replace(',', '.');
+            }
+        }
+        #endregion
+
+        #region CubeCommand
+        public ICommand CubeCommand { get; }
+        private bool OnCubeCommandExecute(object p) => true;
+        private void OnCubeCommandExecuted(object p)
+        {
+            if (double.TryParse(Input, NumberStyles.Any, CultureInfo.InvariantCulture, out double res))
+            {
+                History = $"{Input}³ =";
+                Input = Round(Pow(res, 3), 3).ToString().Replace(',', '.');
+            }
+        }
+        #endregion
+
+        #region Log10Command
+        public ICommand Log10Command { get; }
+        private bool OnLog10CommandExecute(object p) => true;
+        private void OnLog10CommandExecuted(object p)
+        {
+            if (double.TryParse(Input, NumberStyles.Any, CultureInfo.InvariantCulture, out double res))
+            {
+                History = $"lg({Input}) =";
+                if (res <= 0)
+                {
+                    Input = "Error";
+                }
+                else
+                    Input = Round(Log10(res), 3).ToString().Replace(',', '.');
+            }
+        }
+        #endregion
+
+        #region OneDivXCommand
+        public ICommand OneDivXCommand { get; }
+        private bool OnOneDivXCommandExecute(object p) => true;
+        private void OnOneDivXCommandExecuted(object p)
+        {
+            if (double.TryParse(Input, NumberStyles.Any, CultureInfo.InvariantCulture, out double res))
+            {
+                History = $"1 ÷ {Input} =";
+                if (res == 0)
+                {
+                    Input = "Error";
+                }
+                else
+                    Input = Round(1 / res, 3).ToString().Replace(',', '.');
+            }
+        }
+        #endregion
+
         #region EqualsClickCommand
         public ICommand EqualsClickCommand { get; }
 
@@ -375,6 +457,16 @@ namespace Calculator_WPF.ViewModels
             PercentClickCommand = new LambdaCommand(OnPercentClickCommandExecuted, OnPercentClickCommandExecute);
 
             TrigonometricClickCommand = new LambdaCommand(OnTrigonometricClickCommandExecuted, OnTrigonometricClickCommandExecute);
+
+            SquareRootCommand = new LambdaCommand(OnSquareRootCommandExecuted, OnSquareRootCommandExecute);
+
+            SquareCommand = new LambdaCommand(OnSquareCommandExecuted, OnSquareCommandExecute);
+
+            CubeCommand = new LambdaCommand(OnCubeCommandExecuted, OnCubeCommandExecute);
+
+            Log10Command = new LambdaCommand(OnLog10CommandExecuted, OnLog10CommandExecute);
+
+            OneDivXCommand = new LambdaCommand(OnOneDivXCommandExecuted, OnOneDivXCommandExecute);
         }
     }
 }

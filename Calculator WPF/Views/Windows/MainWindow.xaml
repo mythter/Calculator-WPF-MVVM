@@ -483,6 +483,74 @@
         </Style>
         <!--#endregion-->
 
+        <!--#region Other operations button style -->
+        <Style x:Key="OtherOperationsButton"
+               TargetType="{x:Type Button}"
+               BasedOn="{StaticResource RoundButton}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ButtonBase}">
+                        <Border CornerRadius="5"
+                                Background="{TemplateBinding Background}"
+                                Name="button"
+                                Width="40"
+                                Height="25">
+                            <Grid>
+                                <Border BorderThickness="1,0,1,1"
+                                        BorderBrush="Black"
+                                        CornerRadius="{Binding ElementName=button, Path=CornerRadius}">
+                                    <Border.Effect>
+                                        <BlurEffect Radius="2"
+                                                    KernelType="Gaussian" />
+                                    </Border.Effect>
+                                </Border>
+                                <Border BorderThickness="0,1,0,0"
+                                        BorderBrush="White"
+                                        Margin="2"
+                                        Opacity="0.7"
+                                        CornerRadius="{Binding ElementName=button, Path=CornerRadius}">
+                                    <Border.Effect>
+                                        <BlurEffect Radius="2"
+                                                    KernelType="Gaussian" />
+                                    </Border.Effect>
+                                </Border>
+                                <ContentPresenter TextBlock.FontSize="{TemplateBinding FontSize}"
+                                                  TextBlock.FontFamily="{TemplateBinding FontFamily}"
+                                                  TextBlock.Foreground="{TemplateBinding Foreground}"
+                                                  VerticalAlignment="Center"
+                                                  HorizontalAlignment="Center"
+                                                  Content="{TemplateBinding Content}"></ContentPresenter>
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver"
+                                     Value="True">
+                                <Setter Property="Background"
+                                        Value="#555555" />
+                            </Trigger>
+
+                            <Trigger Property="IsPressed"
+                                     Value="True">
+                                <Setter Property="Background"
+                                        Value="#333333" />
+                                <Setter Property="Foreground"
+                                        Value="White" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Background"
+                    Value="#6a6a6a" />
+            <Setter Property="Foreground"
+                    Value="White" />
+            <Setter Property="FontSize"
+                    Value="20" />
+            <Setter Property="FontFamily"
+                    Value="Consolas" />
+        </Style>
+        <!--#endregion-->
+
     </Window.Resources>
 
     <Border CornerRadius="7"
@@ -502,6 +570,7 @@
                 <RowDefinition Height="0.55*" />
                 <RowDefinition Height="0.8*" />
                 <RowDefinition Height="1.2*" />
+                <RowDefinition Height="0.6*" />
                 <RowDefinition Height="*" />
                 <RowDefinition Height="*" />
                 <RowDefinition Height="*" />
@@ -590,9 +659,53 @@
                      VerticalAlignment="Center"
                      Foreground="LightGray"
                      IsReadOnly="True"
-                     Text="{Binding Input}"/>
+                     Text="{Binding Input}" />
 
-            <Button Grid.Row="7"
+            <Button Grid.Row="3"
+                    Grid.Column="1"
+                    Style="{StaticResource OtherOperationsButton}"
+                    Command="{Binding SquareRootCommand}">
+                <TextBlock Text="√x"
+                           Margin="0,0,0,1"
+                           FontFamily="{StaticResource MontserratMedium}"
+                           FontSize="12" />
+            </Button>
+
+            <Button Grid.Row="3"
+                    Grid.Column="2"
+                    Content="x²"
+                    Style="{StaticResource OtherOperationsButton}"
+                    Command="{Binding SquareCommand}"
+                    FontFamily="{StaticResource MontserratMedium}"
+                    FontSize="14" />
+
+            <Button Grid.Row="3"
+                    Grid.Column="3"
+                    Content="x³"
+                    Style="{StaticResource OtherOperationsButton}"
+                    Command="{Binding CubeCommand}"
+                    FontFamily="{StaticResource MontserratMedium}"
+                    FontSize="14" />
+
+            <Button Grid.Row="3"
+                    Grid.Column="4"
+                    Content="1/x"
+                    Style="{StaticResource OtherOperationsButton}"
+                    Command="{Binding OneDivXCommand}"
+                    FontFamily="{StaticResource MontserratMedium}"
+                    FontSize="13" />
+
+
+            <Button Grid.Row="3"
+                    Grid.Column="5"
+                    Content="lg(x)"
+                    Style="{StaticResource OtherOperationsButton}"
+                    Command="{Binding Log10Command}"
+                    FontFamily="{StaticResource MontserratMedium}"
+                    FontSize="11" />
+
+
+            <Button Grid.Row="8"
                     Grid.Column="4"
                     Style="{StaticResource OperationButton}"
                     Command="{Binding DotClickCommand}">
@@ -602,7 +715,7 @@
 
             </Button>
 
-            <Button Grid.Row="7"
+            <Button Grid.Row="8"
                     Grid.Column="3"
                     Style="{StaticResource OperationButton}"
                     Command="{Binding PercentClickCommand}">
@@ -612,7 +725,7 @@
 
             </Button>
 
-            <Button Grid.Row="7"
+            <Button Grid.Row="8"
                     Grid.Column="2"
                     Style="{StaticResource NumberButton}"
                     Command="{Binding NumberClickCommand}"
@@ -622,7 +735,7 @@
                                 Foreground="{StaticResource ButtonForeground}" />
             </Button>
 
-            <Button Grid.Row="7"
+            <Button Grid.Row="8"
                     Grid.Column="1"
                     Style="{StaticResource OperationButton}"
                     Command="{Binding ChangeSignCommand}">
@@ -632,7 +745,7 @@
 
             </Button>
 
-            <Button Grid.Row="6"
+            <Button Grid.Row="7"
                     Grid.Column="5"
                     Style="{StaticResource OperationButton}"
                     Command="{Binding OperationClickCommand}"
@@ -642,7 +755,7 @@
                                     Foreground="{StaticResource ButtonForeground}" />
             </Button>
 
-            <Button Grid.Row="6"
+            <Button Grid.Row="7"
                     Grid.Column="4"
                     Style="{StaticResource OperationButton}"
                     Command="{Binding OperationClickCommand}"
@@ -653,7 +766,7 @@
 
             </Button>
 
-            <Button Grid.Row="6"
+            <Button Grid.Row="7"
                     Grid.Column="3"
                     Style="{StaticResource NumberButton}"
                     Command="{Binding NumberClickCommand}"
@@ -664,7 +777,7 @@
 
             </Button>
 
-            <Button Grid.Row="6"
+            <Button Grid.Row="7"
                     Grid.Column="2"
                     Style="{StaticResource NumberButton}"
                     Command="{Binding NumberClickCommand}"
@@ -675,7 +788,7 @@
 
             </Button>
 
-            <Button Grid.Row="6"
+            <Button Grid.Row="7"
                     Grid.Column="1"
                     Style="{StaticResource NumberButton}"
                     Command="{Binding NumberClickCommand}"
@@ -686,7 +799,7 @@
                                 Foreground="{StaticResource ButtonForeground}" />
             </Button>
 
-            <Button Grid.Row="5"
+            <Button Grid.Row="6"
                     Grid.Column="5"
                     Style="{StaticResource OperationButton}"
                     Command="{Binding OperationClickCommand}"
@@ -696,7 +809,7 @@
                                     Foreground="{StaticResource ButtonForeground}" />
             </Button>
 
-            <Button Grid.Row="5"
+            <Button Grid.Row="6"
                     Grid.Column="4"
                     Style="{StaticResource OperationButton}"
                     Command="{Binding OperationClickCommand}"
@@ -706,7 +819,7 @@
                                     Foreground="{StaticResource ButtonForeground}" />
             </Button>
 
-            <Button Grid.Row="5"
+            <Button Grid.Row="6"
                     Grid.Column="3"
                     Style="{StaticResource NumberButton}"
                     Command="{Binding NumberClickCommand}"
@@ -717,7 +830,7 @@
 
             </Button>
 
-            <Button Grid.Row="5"
+            <Button Grid.Row="6"
                     Grid.Column="2"
                     Style="{StaticResource NumberButton}"
                     Command="{Binding NumberClickCommand}"
@@ -728,7 +841,7 @@
 
             </Button>
 
-            <Button Grid.Row="5"
+            <Button Grid.Row="6"
                     Grid.Column="1"
                     Style="{StaticResource NumberButton}"
                     Command="{Binding NumberClickCommand}"
@@ -739,7 +852,7 @@
 
             </Button>
 
-            <Button Grid.Row="4"
+            <Button Grid.Row="5"
                     Grid.Column="5"
                     Style="{StaticResource OperationButton}"
                     Command="{Binding PiClickCommand}">
@@ -748,7 +861,7 @@
                                     Foreground="{StaticResource ButtonForeground}" />
             </Button>
 
-            <Button Grid.Row="4"
+            <Button Grid.Row="5"
                     Grid.Column="4"
                     Style="{StaticResource OperationButton}"
                     Command="{Binding ExpClickCommand}">
@@ -756,7 +869,7 @@
                        Height="18" />
             </Button>
 
-            <Button Grid.Row="4"
+            <Button Grid.Row="5"
                     Grid.Column="3"
                     Style="{StaticResource NumberButton}"
                     Command="{Binding NumberClickCommand}"
@@ -767,7 +880,7 @@
 
             </Button>
 
-            <Button Grid.Row="4"
+            <Button Grid.Row="5"
                     Grid.Column="2"
                     Style="{StaticResource NumberButton}"
                     Command="{Binding NumberClickCommand}"
@@ -778,7 +891,7 @@
 
             </Button>
 
-            <Button Grid.Row="4"
+            <Button Grid.Row="5"
                     Grid.Column="1"
                     Style="{StaticResource NumberButton}"
                     Command="{Binding NumberClickCommand}"
@@ -788,7 +901,7 @@
                                 Foreground="{StaticResource ButtonForeground}" />
             </Button>
 
-            <Button Grid.Row="3"
+            <Button Grid.Row="4"
                     Grid.Column="5"
                     Style="{StaticResource OperationButton}"
                     Command="{Binding BackSpaceCommand}">
@@ -797,7 +910,7 @@
                                     Foreground="{StaticResource ButtonForeground}" />
             </Button>
 
-            <Button Grid.Row="3"
+            <Button Grid.Row="4"
                     Grid.Column="4"
                     Style="{StaticResource OperationButton}"
                     Command="{Binding ClearCommand}">
@@ -805,7 +918,7 @@
                        Height="17" />
             </Button>
 
-            <Button Grid.Row="3"
+            <Button Grid.Row="4"
                     Grid.Column="3"
                     Style="{StaticResource OperationButton}"
                     Command="{Binding ClearEntryCommand}">
@@ -813,7 +926,7 @@
                        Height="17" />
             </Button>
 
-            <Button Grid.Row="3"
+            <Button Grid.Row="4"
                     Grid.Column="2"
                     Style="{StaticResource OperationButton}"
                     Command="{Binding TrigonometricClickCommand}"
@@ -822,7 +935,7 @@
                        Width="35" />
             </Button>
 
-            <Button Grid.Row="3"
+            <Button Grid.Row="4"
                     Grid.Column="1"
                     Style="{StaticResource OperationButton}"
                     Command="{Binding TrigonometricClickCommand}"
@@ -832,7 +945,7 @@
                        Margin="0,0,0,4" />
             </Button>
 
-            <Button Grid.Row="7"
+            <Button Grid.Row="8"
                     Grid.Column="5"
                     Style="{StaticResource EqualsButton}"
                     Command="{Binding EqualsClickCommand}">
