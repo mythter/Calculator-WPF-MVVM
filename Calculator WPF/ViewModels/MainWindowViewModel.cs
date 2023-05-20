@@ -83,7 +83,7 @@ namespace Calculator_WPF.ViewModels
             if (Input.Contains('.') && Input.Substring(Input.IndexOf('.') + 1).Length >= 3)
                 return;
 
-            if (Input?.Length < 10 && (double.Parse(Input + inp, NumberStyles.Any, CultureInfo.InvariantCulture) <= 500000
+            if (Input?.Length < 9 && (double.Parse(Input + inp, NumberStyles.Any, CultureInfo.InvariantCulture) <= 500000
                 && double.Parse(Input + inp, NumberStyles.Any, CultureInfo.InvariantCulture) >= -300000))
             {
                 Input += inp;
@@ -128,7 +128,7 @@ namespace Calculator_WPF.ViewModels
             if (double.TryParse(Input, NumberStyles.Any, CultureInfo.InvariantCulture, out res))
             {
                 res = Round(-res, 3);
-                Input = res.ToString().Length < 10 ? res.ToString().Replace(',', '.') : res.ToString("E2").Replace(',', '.');
+                Input = res.ToString().Length < 9 ? res.ToString().Replace(',', '.') : res.ToString("0.000E+00").Replace(',', '.');
             }
 
             if (History.Contains('='))
@@ -358,7 +358,7 @@ namespace Calculator_WPF.ViewModels
                     }
                     break;
             }
-            Input = tempRes.Length <= 10 ? tempRes : result.ToString("E3").Replace(',', '.');
+            Input = tempRes.Length <= 9 ? tempRes : result.ToString("0.000E+00").Replace(',', '.');
             History = temp.Length < 17 ? temp : "";
         }
         #endregion
@@ -422,7 +422,7 @@ namespace Calculator_WPF.ViewModels
                     break;
             }
             Input = "0";
-            History = temp.Length < 17 ? temp : first.ToString("E3") + temp.Substring(temp.Length - 2);
+            History = temp.Length < 17 ? temp : first.ToString("0.000E+00") + temp.Substring(temp.Length - 2);
         }
         #endregion
 
