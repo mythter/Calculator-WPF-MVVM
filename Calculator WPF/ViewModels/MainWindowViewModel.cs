@@ -14,7 +14,7 @@ namespace Calculator_WPF.ViewModels
 {
     class MainWindowViewModel : ViewModel
     {
-        double first = 0, second = 0, result = 0;
+        double first = 0, result = 0;
         string op = "";
 
         #region Properties
@@ -145,10 +145,12 @@ namespace Calculator_WPF.ViewModels
         private bool OnBackSpaceCommandExecute(object p) => true;
         private void OnBackSpaceCommandExecuted(object p)
         {
-            if (Input.Length == 1 || (Input.Length == 2 && Input[0] == '-') || Input == "Error")
+            History = "";
+            if (Input == "Error")
+                Input = "0";
+            else if (Input.Length == 1 || (Input.Length == 2 && Input[0] == '-'))
                 Input = "";
-
-            if (Input.Length > 0)
+            else if (Input.Length > 0)
                 Input = Input.Substring(0, Input.Length - 1);
         }
         #endregion
@@ -174,7 +176,7 @@ namespace Calculator_WPF.ViewModels
             Input = "0";
             History = "";
             op = "";
-            first = second = result = 0;
+            first = result = 0;
         }
         #endregion
 
@@ -385,7 +387,7 @@ namespace Calculator_WPF.ViewModels
             {
                 Input = "Error";
                 History = "";
-                first = second = result = 0;
+                first = result = 0;
                 return;
             }
 
