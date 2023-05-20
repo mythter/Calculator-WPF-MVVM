@@ -1,0 +1,845 @@
+﻿<Window x:Class="Calculator_WPF.MainWindow"
+        x:Name="root"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:phos="clr-namespace:Calculator_WPF.Fonts.RegularPhosphor"
+        xmlns:phosbold="clr-namespace:Calculator_WPF.Fonts.BoldPhosphor"
+        xmlns:phosfill="clr-namespace:Calculator_WPF.Fonts.FillPhosphor"
+        xmlns:mat="clr-namespace:Calculator_WPF.Fonts.RegularMaterial"
+        xmlns:vm="clr-namespace:Calculator_WPF.ViewModels"
+        xmlns:matround="clr-namespace:Calculator_WPF.Fonts.RegularMaterialRound"
+        xmlns:local="clr-namespace:Calculator_WPF"
+        mc:Ignorable="d"
+        Title="MainWindow"
+        Height="450"
+        Width="300"
+        AllowsTransparency="True"
+        Background="Transparent"
+        WindowStyle="None">
+
+    <Window.DataContext>
+        <vm:MainWindowViewModel />
+    </Window.DataContext>
+
+    <Window.Resources>
+
+        <FontFamily x:Key="MontserratRegular">pack://application:,,,/Fonts/#Montserrat Regular</FontFamily>
+        <FontFamily x:Key="MontserratMedium">pack://application:,,,/Fonts/#Montserrat Medium</FontFamily>
+
+        <SolidColorBrush x:Key="ButtonForeground"
+                         Color="White" />
+
+        <SolidColorBrush x:Key="NumbersBackground"
+                         Color="#9FA9AA" />
+        <SolidColorBrush x:Key="NumbersBackgroundOver"
+                         Color="#848c8d" />
+        <SolidColorBrush x:Key="NumbersBackgroundPressed"
+                         Color="#555a5b" />
+
+        <SolidColorBrush x:Key="OperationsBackground"
+                         Color="#889C9B" />
+        <SolidColorBrush x:Key="OperationsBackgroundOver"
+                         Color="#728383" />
+        <SolidColorBrush x:Key="OperationsBackgroundPressed"
+                         Color="#4c5757" />
+
+        <SolidColorBrush x:Key="EqualsBackground"
+                         Color="#BD2A2E" />
+        <SolidColorBrush x:Key="EqualsBackgroundOver"
+                         Color="#992225" />
+        <SolidColorBrush x:Key="EqualsBackgroundPressed"
+                         Color="#6a1719" />
+
+        <SolidColorBrush x:Key="TitleBarCloseBackground"
+                         Color="#9d9d9d" />
+        <SolidColorBrush x:Key="TitleBarCloseBackgroundOver"
+                         Color="#c72c30" />
+        <SolidColorBrush x:Key="TitleBarCloseBackgroundPressed"
+                         Color="#992225" />
+
+        <SolidColorBrush x:Key="TitleBarMinimizeBackground"
+                         Color="#9d9d9d" />
+        <SolidColorBrush x:Key="TitleBarMinimizeBackgroundOver"
+                         Color="#787878" />
+        <SolidColorBrush x:Key="TitleBarMinimizeBackgroundPressed"
+                         Color="#444444" />
+
+        <!--#region Button style -->
+        <Style x:Key="RoundButton"
+               TargetType="{x:Type Button}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ButtonBase}">
+                        <Border CornerRadius="25"
+                                Background="{TemplateBinding Background}"
+                                Name="button"
+                                Width="50"
+                                Height="50">
+                            <Grid>
+                                <Border BorderThickness="1,0,1,1"
+                                        BorderBrush="Black"
+                                        CornerRadius="{Binding ElementName=button, Path=CornerRadius}">
+                                    <Border.Effect>
+                                        <BlurEffect Radius="2"
+                                                    KernelType="Gaussian" />
+                                    </Border.Effect>
+                                </Border>
+                                <Border BorderThickness="0,1,0,0"
+                                        BorderBrush="White"
+                                        Margin="2"
+                                        Opacity="0.7"
+                                        CornerRadius="{Binding ElementName=button, Path=CornerRadius}">
+                                    <Border.Effect>
+                                        <BlurEffect Radius="2"
+                                                    KernelType="Gaussian" />
+                                    </Border.Effect>
+                                </Border>
+                                <ContentPresenter x:Name="test"
+                                                  TextBlock.FontSize="{TemplateBinding FontSize}"
+                                                  TextBlock.FontFamily="{TemplateBinding FontFamily}"
+                                                  TextBlock.Foreground="{TemplateBinding Foreground}"
+                                                  VerticalAlignment="Center"
+                                                  HorizontalAlignment="Center"
+                                                  Content="{TemplateBinding Content}"></ContentPresenter>
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver"
+                                     Value="True">
+                                <Setter Property="Background"
+                                        Value="#848c8d" />
+                            </Trigger>
+
+                            <Trigger Property="IsPressed"
+                                     Value="True">
+                                <Setter Property="Background"
+                                        Value="Black" />
+                                <Setter Property="Foreground"
+                                        Value="White" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Button.Effect">
+                <Setter.Value>
+                    <DropShadowEffect Color="Black"
+                                      Direction="270"
+                                      ShadowDepth="3"
+                                      BlurRadius="15"
+                                      Opacity="0.5" />
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Background"
+                    Value="Gray" />
+            <Setter Property="Foreground"
+                    Value="White" />
+            <Setter Property="FontSize"
+                    Value="20" />
+            <Setter Property="FontFamily"
+                    Value="Consolas" />
+        </Style>
+        <!--#endregion-->
+
+        <!--#region Number button style -->
+        <Style x:Key="NumberButton"
+               TargetType="{x:Type Button}"
+               BasedOn="{StaticResource RoundButton}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ButtonBase}">
+                        <Border CornerRadius="25"
+                                Background="{TemplateBinding Background}"
+                                Name="button"
+                                Width="50"
+                                Height="50">
+                            <Grid>
+                                <Border BorderThickness="1,0,1,1"
+                                        BorderBrush="Black"
+                                        CornerRadius="{Binding ElementName=button, Path=CornerRadius}">
+                                    <Border.Effect>
+                                        <BlurEffect Radius="2"
+                                                    KernelType="Gaussian" />
+                                    </Border.Effect>
+                                </Border>
+                                <Border BorderThickness="0,1,0,0"
+                                        BorderBrush="White"
+                                        Margin="2"
+                                        Opacity="0.7"
+                                        CornerRadius="{Binding ElementName=button, Path=CornerRadius}">
+                                    <Border.Effect>
+                                        <BlurEffect Radius="2"
+                                                    KernelType="Gaussian" />
+                                    </Border.Effect>
+                                </Border>
+                                <ContentPresenter TextBlock.FontSize="{TemplateBinding FontSize}"
+                                                  TextBlock.FontFamily="{TemplateBinding FontFamily}"
+                                                  TextBlock.Foreground="{TemplateBinding Foreground}"
+                                                  VerticalAlignment="Center"
+                                                  HorizontalAlignment="Center"
+                                                  Content="{TemplateBinding Content}"></ContentPresenter>
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver"
+                                     Value="True">
+                                <Setter Property="Background"
+                                        Value="{StaticResource NumbersBackgroundOver}" />
+                            </Trigger>
+
+                            <Trigger Property="IsPressed"
+                                     Value="True">
+                                <Setter Property="Background"
+                                        Value="{StaticResource NumbersBackgroundPressed}" />
+                                <Setter Property="Foreground"
+                                        Value="White" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Background"
+                    Value="{StaticResource NumbersBackground}" />
+            <Setter Property="Foreground"
+                    Value="White" />
+            <Setter Property="FontSize"
+                    Value="20" />
+            <Setter Property="FontFamily"
+                    Value="Consolas" />
+        </Style>
+        <!--#endregion-->
+
+        <!--#region Operation button style -->
+        <Style x:Key="OperationButton"
+               TargetType="{x:Type Button}"
+               BasedOn="{StaticResource RoundButton}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ButtonBase}">
+                        <Border CornerRadius="25"
+                                Background="{TemplateBinding Background}"
+                                Name="button"
+                                Width="50"
+                                Height="50">
+                            <Grid>
+                                <Border BorderThickness="1,0,1,1"
+                                        BorderBrush="Black"
+                                        CornerRadius="{Binding ElementName=button, Path=CornerRadius}">
+                                    <Border.Effect>
+                                        <BlurEffect Radius="2"
+                                                    KernelType="Gaussian" />
+                                    </Border.Effect>
+                                </Border>
+                                <Border BorderThickness="0,1,0,0"
+                                        BorderBrush="White"
+                                        Margin="2"
+                                        Opacity="0.7"
+                                        CornerRadius="{Binding ElementName=button, Path=CornerRadius}">
+                                    <Border.Effect>
+                                        <BlurEffect Radius="2"
+                                                    KernelType="Gaussian" />
+                                    </Border.Effect>
+                                </Border>
+                                <ContentPresenter TextBlock.FontSize="{TemplateBinding FontSize}"
+                                                  TextBlock.FontFamily="{TemplateBinding FontFamily}"
+                                                  TextBlock.Foreground="{TemplateBinding Foreground}"
+                                                  VerticalAlignment="Center"
+                                                  HorizontalAlignment="Center"
+                                                  Content="{TemplateBinding Content}"></ContentPresenter>
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver"
+                                     Value="True">
+                                <Setter Property="Background"
+                                        Value="{StaticResource OperationsBackgroundOver}" />
+                            </Trigger>
+
+                            <Trigger Property="IsPressed"
+                                     Value="True">
+                                <Setter Property="Background"
+                                        Value="{StaticResource OperationsBackgroundPressed}" />
+                                <Setter Property="Foreground"
+                                        Value="White" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Background"
+                    Value="{StaticResource OperationsBackground}" />
+            <Setter Property="Foreground"
+                    Value="White" />
+            <Setter Property="FontSize"
+                    Value="20" />
+            <Setter Property="FontFamily"
+                    Value="Consolas" />
+        </Style>
+        <!--#endregion-->
+
+        <!--#region Equals button style -->
+        <Style x:Key="EqualsButton"
+               TargetType="{x:Type Button}"
+               BasedOn="{StaticResource RoundButton}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ButtonBase}">
+                        <Border CornerRadius="25"
+                                Background="{TemplateBinding Background}"
+                                Name="button"
+                                Width="50"
+                                Height="50">
+                            <Grid>
+                                <Border BorderThickness="1,0,1,1"
+                                        BorderBrush="Black"
+                                        CornerRadius="{Binding ElementName=button, Path=CornerRadius}">
+                                    <Border.Effect>
+                                        <BlurEffect Radius="2"
+                                                    KernelType="Gaussian" />
+                                    </Border.Effect>
+                                </Border>
+                                <Border BorderThickness="0,1,0,0"
+                                        BorderBrush="White"
+                                        Margin="2"
+                                        Opacity="0.7"
+                                        CornerRadius="{Binding ElementName=button, Path=CornerRadius}">
+                                    <Border.Effect>
+                                        <BlurEffect Radius="2"
+                                                    KernelType="Gaussian" />
+                                    </Border.Effect>
+                                </Border>
+                                <ContentPresenter TextBlock.FontSize="{TemplateBinding FontSize}"
+                                                  TextBlock.FontFamily="{TemplateBinding FontFamily}"
+                                                  TextBlock.Foreground="{TemplateBinding Foreground}"
+                                                  VerticalAlignment="Center"
+                                                  HorizontalAlignment="Center"
+                                                  Content="{TemplateBinding Content}"></ContentPresenter>
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver"
+                                     Value="True">
+                                <Setter Property="Background"
+                                        Value="{StaticResource EqualsBackgroundOver}" />
+                            </Trigger>
+
+                            <Trigger Property="IsPressed"
+                                     Value="True">
+                                <Setter Property="Background"
+                                        Value="{StaticResource EqualsBackgroundPressed}" />
+                                <Setter Property="Foreground"
+                                        Value="White" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Background"
+                    Value="{StaticResource EqualsBackground}" />
+            <Setter Property="Foreground"
+                    Value="White" />
+            <Setter Property="FontSize"
+                    Value="20" />
+            <Setter Property="FontFamily"
+                    Value="Consolas" />
+        </Style>
+        <!--#endregion-->
+
+        <!--#region Title bar close button style -->
+        <Style x:Key="TitleBarCloseButton"
+               TargetType="{x:Type Button}"
+               BasedOn="{StaticResource RoundButton}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ButtonBase}">
+                        <Border CornerRadius="5"
+                                Background="{TemplateBinding Background}"
+                                Name="button"
+                                Width="20"
+                                Height="20">
+                            <Grid>
+                                <Border BorderThickness="1,0,1,1"
+                                        BorderBrush="Black"
+                                        CornerRadius="{Binding ElementName=button, Path=CornerRadius}">
+                                    <Border.Effect>
+                                        <BlurEffect Radius="2"
+                                                    KernelType="Gaussian" />
+                                    </Border.Effect>
+                                </Border>
+                                <Border BorderThickness="0,1,0,0"
+                                        BorderBrush="White"
+                                        Margin="2"
+                                        Opacity="0.7"
+                                        CornerRadius="{Binding ElementName=button, Path=CornerRadius}">
+                                    <Border.Effect>
+                                        <BlurEffect Radius="2"
+                                                    KernelType="Gaussian" />
+                                    </Border.Effect>
+                                </Border>
+                                <ContentPresenter TextBlock.FontSize="{TemplateBinding FontSize}"
+                                                  TextBlock.FontFamily="{TemplateBinding FontFamily}"
+                                                  TextBlock.Foreground="{TemplateBinding Foreground}"
+                                                  VerticalAlignment="Center"
+                                                  HorizontalAlignment="Center"
+                                                  Content="{TemplateBinding Content}"></ContentPresenter>
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver"
+                                     Value="True">
+                                <Setter Property="Background"
+                                        Value="{StaticResource TitleBarCloseBackgroundOver}" />
+                            </Trigger>
+
+                            <Trigger Property="IsPressed"
+                                     Value="True">
+                                <Setter Property="Background"
+                                        Value="{StaticResource TitleBarCloseBackgroundPressed}" />
+                                <Setter Property="Foreground"
+                                        Value="White" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Background"
+                    Value="{StaticResource TitleBarCloseBackground}" />
+            <Setter Property="Foreground"
+                    Value="White" />
+            <Setter Property="FontSize"
+                    Value="20" />
+            <Setter Property="FontFamily"
+                    Value="Consolas" />
+        </Style>
+        <!--#endregion-->
+
+        <!--#region Title bar minimize button style -->
+        <Style x:Key="TitleBarMinimizeButton"
+               TargetType="{x:Type Button}"
+               BasedOn="{StaticResource RoundButton}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ButtonBase}">
+                        <Border CornerRadius="5"
+                                Background="{TemplateBinding Background}"
+                                Name="button"
+                                Width="20"
+                                Height="20">
+                            <Grid>
+                                <Border BorderThickness="1,0,1,1"
+                                        BorderBrush="Black"
+                                        CornerRadius="{Binding ElementName=button, Path=CornerRadius}">
+                                    <Border.Effect>
+                                        <BlurEffect Radius="2"
+                                                    KernelType="Gaussian" />
+                                    </Border.Effect>
+                                </Border>
+                                <Border BorderThickness="0,1,0,0"
+                                        BorderBrush="White"
+                                        Margin="2"
+                                        Opacity="0.7"
+                                        CornerRadius="{Binding ElementName=button, Path=CornerRadius}">
+                                    <Border.Effect>
+                                        <BlurEffect Radius="2"
+                                                    KernelType="Gaussian" />
+                                    </Border.Effect>
+                                </Border>
+                                <ContentPresenter TextBlock.FontSize="{TemplateBinding FontSize}"
+                                                  TextBlock.FontFamily="{TemplateBinding FontFamily}"
+                                                  TextBlock.Foreground="{TemplateBinding Foreground}"
+                                                  VerticalAlignment="Center"
+                                                  HorizontalAlignment="Center"
+                                                  Content="{TemplateBinding Content}"></ContentPresenter>
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver"
+                                     Value="True">
+                                <Setter Property="Background"
+                                        Value="{StaticResource TitleBarMinimizeBackgroundOver}" />
+                            </Trigger>
+
+                            <Trigger Property="IsPressed"
+                                     Value="True">
+                                <Setter Property="Background"
+                                        Value="{StaticResource TitleBarMinimizeBackgroundPressed}" />
+                                <Setter Property="Foreground"
+                                        Value="White" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Background"
+                    Value="{StaticResource TitleBarMinimizeBackground}" />
+            <Setter Property="Foreground"
+                    Value="White" />
+            <Setter Property="FontSize"
+                    Value="20" />
+            <Setter Property="FontFamily"
+                    Value="Consolas" />
+        </Style>
+        <!--#endregion-->
+
+    </Window.Resources>
+
+    <Border CornerRadius="7"
+            Background="#3B3936">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="0.05*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="0.05*" />
+            </Grid.ColumnDefinitions>
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="0.55*" />
+                <RowDefinition Height="0.8*" />
+                <RowDefinition Height="1.2*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="0.1*" />
+            </Grid.RowDefinitions>
+
+            <!--#region Icon and Title -->
+            <Grid Grid.Row="0"
+                  Grid.Column="0"
+                  Grid.ColumnSpan="5"
+                  MouseDown="TitleBar_MouseDown">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="8*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <Image Grid.Column="0"
+                       Source="/Images/icon.ico"
+                       Height="22"
+                       Margin="3, 0, 0, 0" />
+
+                <TextBlock Grid.Column="1"
+                           Text="Calculator"
+                           Margin="7, 7, 0, 0"
+                           FontSize="16"
+                           FontFamily="{StaticResource MontserratRegular}"
+                           Foreground="LightGray" />
+            </Grid>
+            <!--#endregion-->
+
+            <!--#region TitleBar buttons -->
+            <Grid Grid.Row="0"
+                  Grid.Column="5">
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="0.4*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <Button Grid.Column="1"
+                        Style="{StaticResource TitleBarMinimizeButton}"
+                        Command="{Binding MinimizeCommand}">
+                    <matround:IconImage Icon="Minimize"
+                                        Height="3"
+                                        Foreground="{StaticResource ButtonForeground}" />
+
+                </Button>
+
+                <Button Grid.Column="2"
+                        Style="{StaticResource TitleBarCloseButton}"
+                        Command="{Binding CloseCommand}">
+                    <phosbold:IconImage Icon="X"
+                                        Height="10"
+                                        Foreground="{StaticResource ButtonForeground}" />
+
+                </Button>
+            </Grid>
+            <!--#endregion-->
+
+            <TextBox Grid.Row="1"
+                     Grid.Column="1"
+                     Grid.ColumnSpan="5"
+                     Background="Transparent"
+                     BorderThickness="0"
+                     TextAlignment="Right"
+                     VerticalAlignment="Bottom"
+                     IsReadOnly="True"
+                     FontSize="30"
+                     FontFamily="{StaticResource MontserratRegular}"
+                     Foreground="Gray"
+                     Text="{Binding History}" />
+
+            <TextBox Grid.Row="2"
+                     Grid.Column="1"
+                     Grid.ColumnSpan="5"
+                     Background="Transparent"
+                     BorderThickness="0"
+                     TextAlignment="Right"
+                     FontSize="48"
+                     FontFamily="{StaticResource MontserratRegular}"
+                     VerticalAlignment="Center"
+                     Foreground="LightGray"
+                     IsReadOnly="True"
+                     Text="{Binding Input}"/>
+
+            <Button Grid.Row="7"
+                    Grid.Column="4"
+                    Style="{StaticResource OperationButton}"
+                    Command="{Binding DotClickCommand}">
+                <phos:IconImage Icon="Dot"
+                                Height="10"
+                                Foreground="{StaticResource ButtonForeground}" />
+
+            </Button>
+
+            <Button Grid.Row="7"
+                    Grid.Column="3"
+                    Style="{StaticResource OperationButton}"
+                    Command="{Binding PercentClickCommand}">
+                <phosbold:IconImage Icon="Percent"
+                                    Height="20"
+                                    Foreground="{StaticResource ButtonForeground}" />
+
+            </Button>
+
+            <Button Grid.Row="7"
+                    Grid.Column="2"
+                    Style="{StaticResource NumberButton}"
+                    Command="{Binding NumberClickCommand}"
+                    CommandParameter="0">
+                <phos:IconImage Icon="NumberZero"
+                                Height="30"
+                                Foreground="{StaticResource ButtonForeground}" />
+            </Button>
+
+            <Button Grid.Row="7"
+                    Grid.Column="1"
+                    Style="{StaticResource OperationButton}"
+                    Command="{Binding ChangeSignCommand}">
+                <phosbold:IconImage Icon="PlusMinus"
+                                    Height="20"
+                                    Foreground="{StaticResource ButtonForeground}" />
+
+            </Button>
+
+            <Button Grid.Row="6"
+                    Grid.Column="5"
+                    Style="{StaticResource OperationButton}"
+                    Command="{Binding OperationClickCommand}"
+                    CommandParameter="+">
+                <phosbold:IconImage Icon="Plus"
+                                    Width="20"
+                                    Foreground="{StaticResource ButtonForeground}" />
+            </Button>
+
+            <Button Grid.Row="6"
+                    Grid.Column="4"
+                    Style="{StaticResource OperationButton}"
+                    Command="{Binding OperationClickCommand}"
+                    CommandParameter="-">
+                <phosbold:IconImage Icon="Minus"
+                                    Width="20"
+                                    Foreground="{StaticResource ButtonForeground}" />
+
+            </Button>
+
+            <Button Grid.Row="6"
+                    Grid.Column="3"
+                    Style="{StaticResource NumberButton}"
+                    Command="{Binding NumberClickCommand}"
+                    CommandParameter="3">
+                <phos:IconImage Icon="NumberThree"
+                                Height="30"
+                                Foreground="{StaticResource ButtonForeground}" />
+
+            </Button>
+
+            <Button Grid.Row="6"
+                    Grid.Column="2"
+                    Style="{StaticResource NumberButton}"
+                    Command="{Binding NumberClickCommand}"
+                    CommandParameter="2">
+                <phos:IconImage Icon="NumberTwo"
+                                Height="30"
+                                Foreground="{StaticResource ButtonForeground}" />
+
+            </Button>
+
+            <Button Grid.Row="6"
+                    Grid.Column="1"
+                    Style="{StaticResource NumberButton}"
+                    Command="{Binding NumberClickCommand}"
+                    CommandParameter="1">
+                <phos:IconImage Icon="NumberOne"
+                                Height="30"
+                                Margin="0,0,5,0"
+                                Foreground="{StaticResource ButtonForeground}" />
+            </Button>
+
+            <Button Grid.Row="5"
+                    Grid.Column="5"
+                    Style="{StaticResource OperationButton}"
+                    Command="{Binding OperationClickCommand}"
+                    CommandParameter="/">
+                <phosbold:IconImage Icon="Divide"
+                                    Width="20"
+                                    Foreground="{StaticResource ButtonForeground}" />
+            </Button>
+
+            <Button Grid.Row="5"
+                    Grid.Column="4"
+                    Style="{StaticResource OperationButton}"
+                    Command="{Binding OperationClickCommand}"
+                    CommandParameter="*">
+                <phosbold:IconImage Icon="X"
+                                    Width="20"
+                                    Foreground="{StaticResource ButtonForeground}" />
+            </Button>
+
+            <Button Grid.Row="5"
+                    Grid.Column="3"
+                    Style="{StaticResource NumberButton}"
+                    Command="{Binding NumberClickCommand}"
+                    CommandParameter="6">
+                <phos:IconImage Icon="NumberSix"
+                                Height="30"
+                                Foreground="{StaticResource ButtonForeground}" />
+
+            </Button>
+
+            <Button Grid.Row="5"
+                    Grid.Column="2"
+                    Style="{StaticResource NumberButton}"
+                    Command="{Binding NumberClickCommand}"
+                    CommandParameter="5">
+                <phos:IconImage Icon="NumberFive"
+                                Height="30"
+                                Foreground="{StaticResource ButtonForeground}" />
+
+            </Button>
+
+            <Button Grid.Row="5"
+                    Grid.Column="1"
+                    Style="{StaticResource NumberButton}"
+                    Command="{Binding NumberClickCommand}"
+                    CommandParameter="4">
+                <phos:IconImage Icon="NumberFour"
+                                Height="30"
+                                Foreground="{StaticResource ButtonForeground}" />
+
+            </Button>
+
+            <Button Grid.Row="4"
+                    Grid.Column="5"
+                    Style="{StaticResource OperationButton}"
+                    Command="{Binding PiClickCommand}">
+                <phosbold:IconImage Icon="Pi"
+                                    Height="15"
+                                    Foreground="{StaticResource ButtonForeground}" />
+            </Button>
+
+            <Button Grid.Row="4"
+                    Grid.Column="4"
+                    Style="{StaticResource OperationButton}"
+                    Command="{Binding ExpClickCommand}">
+                <Image Source="/Images/e.png"
+                       Height="18" />
+            </Button>
+
+            <Button Grid.Row="4"
+                    Grid.Column="3"
+                    Style="{StaticResource NumberButton}"
+                    Command="{Binding NumberClickCommand}"
+                    CommandParameter="9">
+                <phos:IconImage Icon="NumberNine"
+                                Height="30"
+                                Foreground="{StaticResource ButtonForeground}" />
+
+            </Button>
+
+            <Button Grid.Row="4"
+                    Grid.Column="2"
+                    Style="{StaticResource NumberButton}"
+                    Command="{Binding NumberClickCommand}"
+                    CommandParameter="8">
+                <phos:IconImage Icon="NumberEight"
+                                Foreground="{StaticResource ButtonForeground}"
+                                Height="30" />
+
+            </Button>
+
+            <Button Grid.Row="4"
+                    Grid.Column="1"
+                    Style="{StaticResource NumberButton}"
+                    Command="{Binding NumberClickCommand}"
+                    CommandParameter="7">
+                <phos:IconImage Icon="NumberSeven"
+                                Height="30"
+                                Foreground="{StaticResource ButtonForeground}" />
+            </Button>
+
+            <Button Grid.Row="3"
+                    Grid.Column="5"
+                    Style="{StaticResource OperationButton}"
+                    Command="{Binding BackSpaceCommand}">
+                <phosbold:IconImage Icon="Backspace"
+                                    Height="20"
+                                    Foreground="{StaticResource ButtonForeground}" />
+            </Button>
+
+            <Button Grid.Row="3"
+                    Grid.Column="4"
+                    Style="{StaticResource OperationButton}"
+                    Command="{Binding ClearCommand}">
+                <Image Source="/Images/C.png"
+                       Height="17" />
+            </Button>
+
+            <Button Grid.Row="3"
+                    Grid.Column="3"
+                    Style="{StaticResource OperationButton}"
+                    Command="{Binding ClearEntryCommand}">
+                <Image Source="/Images/CE.png"
+                       Height="17" />
+            </Button>
+
+            <Button Grid.Row="3"
+                    Grid.Column="2"
+                    Style="{StaticResource OperationButton}"
+                    Command="{Binding TrigonometricClickCommand}"
+                    CommandParameter="cos">
+                <Image Source="/Images/cos.png"
+                       Width="35" />
+            </Button>
+
+            <Button Grid.Row="3"
+                    Grid.Column="1"
+                    Style="{StaticResource OperationButton}"
+                    Command="{Binding TrigonometricClickCommand}"
+                    CommandParameter="sin">
+                <Image Source="/Images/sin.png"
+                       Width="30"
+                       Margin="0,0,0,4" />
+            </Button>
+
+            <Button Grid.Row="7"
+                    Grid.Column="5"
+                    Style="{StaticResource EqualsButton}"
+                    Command="{Binding EqualsClickCommand}">
+                <phosbold:IconImage Icon="Equals"
+                                    Width="20"
+                                    Foreground="{StaticResource ButtonForeground}" />
+            </Button>
+        </Grid>
+    </Border>
+</Window>
